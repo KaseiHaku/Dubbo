@@ -1,0 +1,16 @@
+Project Structure (Module):
+    dubbo-api                   # 该模块需单独打包，在服务提供方和消费方共享
+
+
+
+
+Project Run:
+    shell> cd $ZOOKEEPER_HOME/bin
+    shell> ./zkServer.sh start
+
+    shell> cd dubbo-provider
+    shell> mvn -Djava.net.preferIPv4Stack=true -Dexec.mainClass=kasei.dubbo.provider.DubboProviderApp exec:java
+
+    shell> cd dubbo-consumer
+    shell> mvn -Djava.net.preferIPv4Stack=true -Dexec.mainClass=kasei.dubbo.consumer.DubboConsumerApp exec:java
+

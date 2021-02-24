@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- TODO 当前项目所使用的 pom.xml 版本 -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- TODO 继承配置: parent 标签下的 artifact 的 packaging 必须为 pom
+        可以继承当前模块聚合的子模块
+    -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.4.1</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+
+
+    <!-- TODO 基本配置及项目信息: 多模块项目父模块 packaging 类型必须为 pom -->
+    <groupId>kasei.dubbo</groupId>
+    <artifactId>Dubbo</artifactId><!-- 此处采用 大写驼峰形式 是为了 idea 项目展示的时候跟 git 仓库名一致-->
+    <version>0.0.1</version>
+    <packaging>pom</packaging><!-- 该打包类型只能在 <parent/> 或者 <dependencyManagement/> 中引用 -->
+    <name>Kasei Dubbo</name>
+    <description>Kasei Dubbo</description>
+    <url>http://dubbo.kasei.haku</url>
+
+
+    <!-- TODO 聚合器: aggregate/poly: 具有 modules 的 artifact 的 packaging 必须为 pom
+        可以聚合父 pom 不是当前模块的子模块
+    -->
+    <modules>
+        <module>dubbo-api</module>
+        <module>dubbo-provider</module>
+        <module>dubbo-consumer</module>
+    </modules>
+
+    <properties>
+        <!-- env.x 开头的变量，都是引用环境变量-->
+        <var.env>${env.PATH}</var.env>
+        <!--
+            project.x 开头的变量表示当前 pom.xml 文件(包括父 pom )中包含该路径
+            project.basedir == <project><basedir>/opt/Git/LocalRepository</basedir></project>
+        -->
+        <var.project>${project.basedir}</var.project>
+
+        <!-- settings.x 表示 settings.xml 包含的元素 -->
+        <var.settings>${settings.offline}</var.settings>
+
+        <!--java.x 表示 java.lang.System.getProperties() 能访问到的属性-->
+        <var.java>${java.version}</var.java>
+
+
+        <!--x 表示当前 pom.xml <properties> 中包含的属性 -->
+        <!--<var.properties>${var.properties}</var.properties>-->
+        <!--<prop.java.home>/opt/Java/jdk-11.0.5</prop.java.home>-->
+        <prop.sourceEncoding>UTF-8</prop.sourceEncoding>
+        <basedir>.</basedir>
+        <argLine>-Dfile.encoding=UTF-8</argLine>
+
+        <!-- 当前项目定制属性 -->
+        <org.springframework.cloud.version>2020.0.0</org.springframework.cloud.version><!-- spring cloud 版本依赖管理 -->
+        <org.springdoc.version>1.5.2</org.springdoc.version><!-- open api 文档生成 -->
+        <org.apache.commons.version>1.20</org.apache.commons.version><!-- apache JDK 工具扩展 -->
+        <org.apache.poi.version>4.1.2</org.apache.poi.version><!-- office 操作工具 -->
+        <com.google.guava.version>30.1-jre</com.google.guava.version><!-- google JDK 工具扩展 -->
+        <com.google.zxing.version>3.4.1</com.google.zxing.version><!-- 二维码生成工具 -->
+        <org.jfree.jfreesvg.version>3.4</org.jfree.jfreesvg.version><!-- svg 适量图工具 -->
+        <org.neo4j.version>4.2.0</org.neo4j.version><!-- neo4j 图形数据库 -->
+        <io.github.classgraph.version>4.8.98</io.github.classgraph.version><!-- 类扫描工具 -->
+        <io.lettuce.version>6.0.1.RELEASE</io.lettuce.version><!-- Redis Java Client -->
+        <com.zaxxer.HikariCP.version>3.4.5</com.zaxxer.HikariCP.version><!-- HikariCP jdbc 数据库连接池 -->
+        <cglib.version>3.3.0</cglib.version><!-- HikariCP jdbc 数据库连接池 -->
+        <jjwt.version>0.11.2</jjwt.version><!-- JWT 工具包 -->
+        <com.h2database.version>1.4.200</com.h2database.version><!-- JWT 工具包 -->
+        <org.mybatis.spring.boot.version>2.1.4</org.mybatis.spring.boot.version><!-- Mybatis 半自动 ORM 框架 -->
+        <spring.data.neo4j.rx.version>1.1.1</spring.data.neo4j.rx.version><!-- Spring Data Neo4j⚡RX 响应式开发框架 -->
+    </properties>
+
+
+    <!-- TODO 依赖配置 -->
+    <repositories>
+        <!-- 阿里云 maven 仓库 -->
+        <repository>
+            <id>aliYunRepository</id>
+            <name>ali yun maven repository</name>
+            <url>https://maven.aliyun.com/repository/central</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </releases>
+        </repository>
+
+        <!-- jcenter bintray 仓库配置 -->
+        <repository>
+            <id>jcenter-release</id>
+            <name>jcenter</name>
+            <url>https://jcenter.bintray.com/</url>
+            <layout>default</layout><!-- 写死 -->
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>interval:36000</updatePolicy><!-- 数字代表分钟-->
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled><!-- 是否开启，跟 snapshots 互斥，只能开启一个 -->
+                <updatePolicy>daily</updatePolicy><!-- 格式： always, daily, never, interval:X -->
+                <checksumPolicy>warn</checksumPolicy><!-- ignore，fail， warn -->
+            </releases>
+        </repository>
+
+        <!-- jcenter snapshot 版本发布库 -->
+        <repository>
+            <id>jcenter-snapshots</id>
+            <name>jcenter</name>
+            <url>http://oss.jfrog.org/artifactory/oss-snapshot-local/</url>
+            <layout>default</layout><!-- 写死 -->
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>interval:36000</updatePolicy><!-- 数字代表分钟-->
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- 统一控制子模块引入 jar 包的版本 -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${org.springframework.cloud.version}</version>
+                <type>pom</type>
+                <!--
+                    由于 maven 中只能使用一个 <parent/> 标签，此处用于处理子模块版本控制，
+                    import 只能在 dependencyManagement 中使用
+                -->
+                <scope>import</scope>
+            </dependency>
+
+            <!-- 自定义模块，用于依赖聚合 -->
+            <dependency>
+                <groupId>kasei.springcloud</groupId>
+                <artifactId>depend-poly-reactive</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>kasei.springcloud</groupId>
+                <artifactId>depend-poly-mvc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+
+            <!-- 公共子模块-->
+            <dependency>
+                <groupId>kasei.springcloud</groupId>
+                <artifactId>basic-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- 全局排除 spring-boot-starter-logging 依赖，这样就不会引入其他日志框架-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter</artifactId>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+
+            <!-- 接口发现相关的 jar 包，注意两个依赖不能同时存在 -->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-ui</artifactId>
+                <version>${org.springdoc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-webflux-ui</artifactId>
+                <version>${org.springdoc.version}</version>
+            </dependency>
+
+
+            <!-- apache commons -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>${org.apache.commons.version}</version>
+            </dependency>
+
+            <!-- POI -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${org.apache.poi.version}</version>
+            </dependency>
+
+            <!-- Quick Response Code -->
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>core</artifactId>
+                <version>${com.google.zxing.version}</version>
+            </dependency>
+
+            <!-- google JDK 工具扩展
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${com.google.guava.version}</version>
+            </dependency>-->
+
+            <!-- SVG: 不使用 apache 的 batik ，因为依赖过多 -->
+            <dependency>
+                <groupId>org.jfree</groupId>
+                <artifactId>jfreesvg</artifactId>
+                <version>${org.jfree.jfreesvg.version}</version>
+            </dependency>
+
+            <!-- Neo4j 图形数据库 -->
+            <dependency>
+                <groupId>org.neo4j</groupId>
+                <artifactId>neo4j</artifactId>
+                <version>${org.neo4j.version}</version>
+            </dependency>
+            <dependency> <!-- Neo4j 图形数据库驱动 -->
+                <groupId>org.neo4j.driver</groupId>
+                <artifactId>neo4j-java-driver</artifactId>
+                <version>${org.neo4j.version}</version>
+            </dependency>
+
+            <!-- Redis Java Client
+            <dependency>
+                <groupId>io.lettuce</groupId>
+                <artifactId>lettuce-core</artifactId>
+                <version>${io.lettuce.version}</version>
+            </dependency>-->
+
+            <!-- AOP: 采用创建子类，覆盖父类的方式实现 AOP -->
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib</artifactId>
+                <version>${cglib.version}</version>
+            </dependency>
+
+            <!-- JWT: Json Web Token -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+
+            <!-- H2 嵌入式数据库，坑：必须使用 mvc 框架，不能使用 webflux -->
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${com.h2database.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <!-- Mybatis: 半自动 ORM 框架 -->
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${org.mybatis.spring.boot.version}</version>
+            </dependency>
+
+            <!-- 类扫描工具 -->
+            <dependency>
+                <groupId>io.github.classgraph</groupId>
+                <artifactId>classgraph</artifactId>
+                <version>${io.github.classgraph.version}</version>
+            </dependency>
+
+            <!-- Spring Data Neo4j⚡RX 响应式开发框架 -->
+            <dependency>
+                <groupId>org.neo4j.springframework.data</groupId>
+                <artifactId>spring-data-neo4j-rx-spring-boot-starter</artifactId>
+                <version>${spring.data.neo4j.rx.version}</version>
+            </dependency>
+
+
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- 所有子模块统一引入的 jar 包 -->
+    <dependencies>
+        <!-- 开发工具 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <!-- version 格式
+                1.0                 最短路径原则
+                [1.0]               version == 1.0
+                (,1.0]              version <= 1.0
+                [1.2,1.3]           1.2 <= version <= 1.3
+                [1.0,2.0)           1.0 <= version < 2.0
+                [1.5,)              version >= 1.5
+                (,1.0],[1.2,)       version <= 1.0 or version >= 1.2
+                (,1.1),(1.1,)       version != 1.1
+            -->
+            <version>1.18.16</version>
+            <!-- scope 类型及含义
+                compile     编译期 和 运行期 都需要的依赖
+                provided    只在编译期需要的依赖，运行期由容器提供
+                runtime     只在运行期需要的依赖，不影响代码编译
+                test        测试依赖
+                system      本地依赖
+                import      只用在 dependencyManager 中对 packaging 为 pom 类型的依赖
+            -->
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- 单元测试 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion><!-- 排除 JUnit4 -->
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+        <!--日志 -->
+        <!-- 将项目中 slf4j jul api 编写的代码，桥接到 log4j2 上，并使用 log4j2 来打印日志-->
+        <!--<dependency>-->
+        <!--    <groupId>org.springframework.boot</groupId>-->
+        <!--    <artifactId>spring-boot-starter-log4j2</artifactId>-->
+        <!--</dependency>-->
+
+        <!-- 接口发现:采用 springdoc 放弃 springfox, 由于 mvc 和 flux 的包不兼容，所以由子模块各自引入 -->
+
+
+    </dependencies>
+
+    <!-- TODO 构建配置 -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- 用于构建 boot 可执行 jar 包 -->
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>2.4.1</version>
+                </plugin>
+
+                <!-- 用于根据数据库表生成 Mybatis 代码。坑：该插件只用于生成代码，在实际编译时，必须注释掉该插件，否则编译不通过 -->
+                <plugin>
+                    <groupId>org.mybatis.generator</groupId>
+                    <artifactId>mybatis-generator-maven-plugin</artifactId>
+                    <version>1.4.0</version>
+                    <executions>
+                        <execution>
+                            <id>Generate MyBatis Artifacts</id>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <configurationFile>${basedir}/src/main/resources/generator/generatorConfig.xml</configurationFile>
+                        <overwrite>true</overwrite>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.h2database</groupId>
+                            <artifactId>h2</artifactId>
+                            <version>${com.h2database.version}</version>
+                            <scope>runtime</scope>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <!-- 配置 javac 执行文件的路径 -->
+                    <!--<executable>${prop.java.home}/bin/javac</executable>-->
+                    <!-- 用于指定该编译插件所使用的 java 编译器的版本 -->
+                    <!--<compilerVersion>1.3</compilerVersion>-->
+                    <source>1.8</source><!-- jdk 8 及以前使用这种格式配置 -->
+                    <target>1.8</target><!-- jdk 8 及以前使用这种格式配置 -->
+                    <!--<release>11</release> maven 运行环境是 jdk 9 及以后使用这种格式配置 -->
+                    <encoding>${prop.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <encoding>${prop.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <!-- maven test plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M4</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.2</version>
+            </plugin>
+
+            <!--<plugin>-->
+            <!--    <groupId>org.apache.maven.plugins</groupId>-->
+            <!--    <artifactId>maven-war-plugin</artifactId>-->
+            <!--    <version>3.3.1</version>-->
+            <!--    <configuration>-->
+            <!--        &lt;!&ndash;<webappDirectory>/sample/servlet/container/deploy/directory</webappDirectory>&ndash;&gt;-->
+            <!--    </configuration>-->
+            <!--</plugin>-->
+        </plugins>
+        <resources>
+            <!--<resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>-->
+        </resources>
+        <filters>
+            <!--<filter>src/main/filters/filter.properties</filter>-->
+        </filters>
+    </build>
+
+    <!-- TODO 环境设置 -->
+
+</project>
