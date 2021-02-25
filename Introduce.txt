@@ -14,3 +14,7 @@ Project Run:
     shell> cd dubbo-consumer
     shell> mvn -Djava.net.preferIPv4Stack=true -Dexec.mainClass=kasei.dubbo.consumer.DubboConsumerApp exec:java
 
+
+Maven Profile:
+    作用: 根据不同的环境打包不同产品,当且仅当不同环境之间除了配置的差异之外,没有任何的代码差异,
+         如果不同环境之间存在任何的代码差异,那么需要使用 git 来管理,而不是 maven profile

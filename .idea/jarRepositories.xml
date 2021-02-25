@@ -7,6 +7,16 @@
       <option name="url" value="https://maven.aliyun.com/repository/central" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="longersoft-fmp" />
+      <option name="name" value="Longersoft Fmp" />
+      <option name="url" value="http://192.168.1.245:8081/nexus/content/groups/longersoft-fmp/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="jcenter-release" />
       <option name="name" value="jcenter" />
       <option name="url" value="https://jcenter.bintray.com/" />
